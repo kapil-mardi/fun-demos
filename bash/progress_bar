@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+progress-bar() {
+	local i=$1
+	local len=$2
+	
+	local perc_done=$((i * 100 / len))
+
+	local array=("|" "/" "-" "|" "/")
+	local s='['
+	for ((itr = 0; itr < perc_done; itr++)); do
+		s+='|'
+	done
+	for ((itr = perc_done; itr < 100; itr++)); do
+		s+=' '
+	done
+	s+=']'
+	
+	local array_index=$((i%${#array[@]}))
+	echo -ne "$s $i/$len ($perc_done%) ${array[array_index]}\r"
+
+}
+
+shopt -s globstar nullglob
+
+type=$1
+echo "finding files $type"
+files=(./**/*.$type)
+len=${#files[@]}
+echo "found $len files"
+
+i=0
+for file in "${files[@]}"; do
+	progress-bar "$((i+1))" "$len"
+	((i++))	
+done
+
+echo
