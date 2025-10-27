@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# directly put the arguments into the file in the append mode
+db_set() {
+    echo "$1,$2" >> db
+}
+
+
+# find the rows with the given key and extract the value
+# sed is used to process the stream of input line by line, then it is used to remove the key and comma from the beginning then fetch the last occurrence 
+# return the last occurrence
+db_get() {
+    grep "^$1," db | sed -e "s/^$1,//" | tail -n 1
+}
+
+# to make this functions usable from command line arguments, first make the file executable and then source it
